@@ -1,6 +1,7 @@
 # node-poker-app
 
 **Originally built for Northeastern ACM's Algorithmic Poker event.**
+
 This project is a full-stack poker application built on top of the `@chevtek/poker-engine` library (with some fixes/adjustments for no-limit hold em). It provides a server for hosting poker games and a frontend interface for players to interact with the game.
 
 ## Description

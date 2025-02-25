@@ -27,17 +27,20 @@ These variables will be shared between the frontend and backend applications.
 ## How to Run
 
 1. Create the `.env` file in the root directory as described above
-2. Open two separate terminal windows.
-3. In the first terminal:
+3. Open a terminal in the monorepo root and run:
+
+   **For development:**
    ```bash
-   cd backend
+   yarn install
    yarn dev
    ```
-4. In the second terminal:
+
+   **For a docker-based prod build:**
    ```bash
-   cd frontend
-   yarn dev
+   yarn docker:build
+   yarn docker:up
    ```
+   
 
 ## Documentation
 

@@ -19,6 +19,9 @@ export default function PokerTable() {
   const { connected } = useWebSocket();
   const [winners, setWinners] = useState<Winner[]>([]);
   const [showWinners, setShowWinners] = useState(false);
+  const [smallBlind, setSmallBlind] = useState(5);
+  const [bigBlind, setBigBlind] = useState(10);
+  const [blindsUpdateMessage, setBlindsUpdateMessage] = useState("");
 
   useEffect(() => {
     if (gameState?.winners) {
@@ -41,6 +44,19 @@ export default function PokerTable() {
 
   const handleRestart = () => {
     performAction("restart");
+  };
+
+  const handleBlindsChange = () => {
+    performAction("updateBlinds", undefined, undefined, {
+      smallBlind,
+      bigBlind,
+    });
+    setBlindsUpdateMessage("Blinds updated successfully");
+
+    // Clear the message after 3 seconds
+    setTimeout(() => {
+      setBlindsUpdateMessage("");
+    }, 3000);
   };
 
   if (!connected) {
@@ -68,6 +84,43 @@ export default function PokerTable() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-900 to-green-800 p-8 relative">
+      {/* Blind Settings */}
+      <div className="absolute bottom-4 right-4 flex flex-col gap-2 z-10">
+        <div className="flex gap-4">
+          <div className="flex flex-col gap-2">
+            <label className="text-white text-sm">Small Blind</label>
+            <input
+              type="number"
+              value={smallBlind}
+              onChange={(e) => setSmallBlind(Number(e.target.value))}
+              className="w-24 px-2 py-1 rounded bg-gray-800 text-white border border-gray-700"
+              min="1"
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className="text-white text-sm">Big Blind</label>
+            <input
+              type="number"
+              value={bigBlind}
+              onChange={(e) => setBigBlind(Number(e.target.value))}
+              className="w-24 px-2 py-1 rounded bg-gray-800 text-white border border-gray-700"
+              min="2"
+            />
+          </div>
+          <button
+            onClick={handleBlindsChange}
+            className="mt-auto mb-1 px-4 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors"
+          >
+            Update
+          </button>
+        </div>
+        {blindsUpdateMessage && (
+          <div className="text-green-400 text-sm animate-fade-in">
+            {blindsUpdateMessage}
+          </div>
+        )}
+      </div>
+
       {/* Always render the sidebar - it will self-hide if there are no requests */}
       <JoinRequestsSidebar />
 

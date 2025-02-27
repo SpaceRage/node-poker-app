@@ -59,7 +59,12 @@ interface JoinRequest {
 interface GameStateContextType {
   gameState: GameState | null;
   privateState: PrivateState | null;
-  performAction: (action: string, amount?: number, playerId?: string) => void;
+  performAction: (
+    action: string,
+    amount?: number,
+    playerId?: string,
+    blinds?: { smallBlind: number; bigBlind: number }
+  ) => void;
   joinRequests: JoinRequest[];
 }
 
@@ -157,7 +162,12 @@ export function GameStateProvider({ children }: { children: React.ReactNode }) {
   }, [connected, addMessageListener]);
 
   const performAction = useCallback(
-    (action: string, amount?: number, playerId?: string) => {
+    (
+      action: string,
+      amount?: number,
+      playerId?: string,
+      blinds?: { smallBlind: number; bigBlind: number }
+    ) => {
       if (!sendMessage) return;
 
       switch (action) {
@@ -186,6 +196,14 @@ export function GameStateProvider({ children }: { children: React.ReactNode }) {
             type: action,
             socketKey: process.env.SOCKET_KEY,
             playerId,
+          });
+          break;
+        case "updateBlinds":
+          sendMessage({
+            type: "updateBlinds",
+            socketKey: process.env.SOCKET_KEY,
+            smallBlind: blinds?.smallBlind,
+            bigBlind: blinds?.bigBlind,
           });
           break;
         default:

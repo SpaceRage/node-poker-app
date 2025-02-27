@@ -127,6 +127,22 @@ export class PokerGameService {
           }
           this.restartGame();
           break;
+        case "updateBlinds":
+          if (message.socketKey !== this.socketKey) {
+            this.sendError(socket, "Unauthorized admin action");
+            return;
+          }
+          if (message.smallBlind >= message.bigBlind) {
+            this.sendError(socket, "Small blind must be less than big blind");
+            return;
+          }
+          this.table.smallBlind = message.smallBlind;
+          this.table.bigBlind = message.bigBlind;
+          this.broadcast({
+            type: "notification",
+            message: `Blinds updated to ${message.smallBlind}/${message.bigBlind}`,
+          });
+          break;
         default:
           this.sendError(socket, "Unknown message type");
       }
